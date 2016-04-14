@@ -1,0 +1,7 @@
+.ntvs_analysis.dat
+.vs/
+node_modules/
+obj/
+*.map
+*.js
+bin/

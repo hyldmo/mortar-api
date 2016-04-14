@@ -1,0 +1,14 @@
+{
+  "name": "recipe-api",
+  "version": "0.0.0",
+  "description": "RecipeAPI",
+  "main": "app.js",
+  "author": {
+    "name": "hyei0912",
+    "email": ""
+  },
+  "dependencies": {
+    "express": "3.4.4",
+    "mongodb": "^2.1.16"
+  }
+}
