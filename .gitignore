@@ -3,6 +3,5 @@
 node_modules/
 obj/
 *.map
-*.js
 bin/
 *.fla
