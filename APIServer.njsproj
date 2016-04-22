@@ -36,6 +36,7 @@
     <Compile Include="app.js" />
     <Compile Include="db.js" />
     <Compile Include="routes\index.js" />
+    <Compile Include="routes\ingredients.js" />
     <Compile Include="routes\users.js" />
     <Content Include="package.json" />
     <Content Include="public\images\favicon.ico" />
