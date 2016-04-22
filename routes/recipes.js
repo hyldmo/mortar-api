@@ -24,7 +24,7 @@ function findQuery(query, callback) {
     MongoClient.connect(url, function (err, db) {
 
         var page = query.page;
-        var maxResults = parseInt(query.maxresults);
+        var maxResults = parseInt(query.limit);
         var collection = db.collection(collName);
 
         var totalResults;
@@ -52,20 +52,24 @@ function findOne (id, callback) {
     MongoClient.connect(url, function(err, db) {
 
         var collection = db.collection(collName);
-        var document;
 
         try {
-            collection.findOne({ _id: ObjectID.createFromHexString(id) }, function(err, doc) {
-                console.log(err);
-                document = doc;
+            id = ObjectID.createFromHexString(id);
+        
+            collection.findOne({ _id: id }, function (err, doc) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    callback(doc);
+                    db.close();
+                }
             });
 
         } catch (error) {
-
-        } finally {
-            callback(document);
+            console.log(error);
+            callback(undefined);
             db.close();
-        }
+        } 
     });
 }
 
