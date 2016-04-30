@@ -2,7 +2,7 @@
 var ObjectID = require('mongodb').ObjectID;
 
 // Connection URL
-var url = 'mongodb://localhost:27017/topkook';
+var url = require('../db.js');
 // Collection Name
 var collName = 'recipes';
 
