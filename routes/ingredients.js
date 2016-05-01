@@ -22,8 +22,13 @@ function findDocuments (callback) {
 
 function findQuery(query, callback) {
     MongoClient.connect(url, function (err, db) {
+        //TODO: Return correct status code
         if (err) {
             callback({ "error": err });
+            return;
+        }
+        if (query.term.length < 3) {
+            callback({ "error": 'Query too short' });
             return;
         }
 
