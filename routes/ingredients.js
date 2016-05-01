@@ -24,7 +24,7 @@ function findQuery(query, callback) {
     MongoClient.connect(url, function (err, db) {
         if (err) {
             callback({ "error": err });
-            db.close();
+            return;
         }
 
         var maxResults = query.limit ? parseInt(query.limit) : 10;
