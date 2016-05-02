@@ -24,11 +24,14 @@ function findQuery(query, callback) {
     MongoClient.connect(url, function (err, db) {
         //TODO: Return correct status code
         if (err) {
-            callback({ "error": err });
+            callback({
+                "error": err,
+                "code": 500
+            });
             return;
         }
         if (query.term.length < 3) {
-            callback({ "error": 'Query too short' });
+            callback({ "error": 'Query too short', code: 400 });
             return;
         }
 
@@ -41,10 +44,16 @@ function findQuery(query, callback) {
         cur.count().then(function (count) {
 
             cur.toArray(function(err, docs) {
-                callback({
-                    "totalResults": count,
-                    "results": docs
-                });
+                if (err)
+                    callback({
+                        "error": err,
+                        "code": 500
+                    });
+                else
+                    callback({
+                        "totalResults": count,
+                        "results": docs
+                    });
 
                 db.close();
             });
@@ -88,11 +97,11 @@ router.get('/*', function (req, resp, next) {
 
 router.get('/search', function (req, resp, next) {
     findQuery(req.query, function (data) {
-        if (data !== undefined) {
-            resp.json(data);
-        } else {
-            next();
+
+        if (data.error) {
+            resp.status(data.code);
         }
+        resp.json(data);
     });
 });
 
