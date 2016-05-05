@@ -30,36 +30,57 @@ function findQuery(query, callback) {
             });
             return;
         }
-        if (query.term.length < 3) {
+        if (query.term.length < 2) {
             callback({ "error": 'Query too short', code: 400 });
             return;
         }
-
+        var array = query.term.split(" ");
+        var term = '';
+        for(var i = 0; i < array.length; i++) {
+            term += array[i];
+            if (i < array.length-1)
+                term += '.+';
+        }
+        console.log(term);
         var maxResults = query.limit ? parseInt(query.limit) : 10;
 
         var collection = db.collection(collName);
 
-        var cur = collection.find({ "substance": { '$regex': query.term, "$options": '-i' } }).limit(maxResults);
+        var cur = collection.find({ "substance": { '$regex': term, "$options": '-i' } }).limit(maxResults);
 
         cur.count().then(function (count) {
 
             cur.toArray(function(err, docs) {
-                if (err)
+                if (err) {
                     callback({
                         "error": err,
                         "code": 500
                     });
-                else
+
+                } else {
+                    //var newArray = [];
+                    //docs.forEach((ingredient, index) => {
+                    //    if (ingredient.substance.toLowerCase().startsWith(array[0].toLowerCase())) {
+                    //        newArray.push(docs.splice(index, 1));
+                    //    }
+                    //});
+                    //newArray.concat(docs);
+                    //docs.sort(function(a, b) {
+                    //    return a.substance.indexOf(term) - b.substance.indexOf(term)
+                    //});
+
                     callback({
                         "totalResults": count,
                         "results": docs
                     });
-
+                }
                 db.close();
             });
         });
     });
 }
+
+
 
 function findOne (id, callback) {
     MongoClient.connect(url, function(err, db) {
