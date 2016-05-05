@@ -30,18 +30,18 @@ function findQuery(query, callback) {
             });
             return;
         }
-        if (query.term.length < 2) {
+        if (query.term.replace(/\s+/g, '').length < 2) {
             callback({ "error": 'Query too short', code: 400 });
             return;
         }
-        var array = query.term.split(" ");
+        //Split string ignoring duplicate and trailing whitespaces
+        var array = query.term.split(/\s+(?=\w)/g);
         var term = '';
         for(var i = 0; i < array.length; i++) {
             term += array[i];
             if (i < array.length-1)
                 term += '.+';
         }
-        console.log(term);
         var maxResults = query.limit ? parseInt(query.limit) : 10;
 
         var collection = db.collection(collName);
