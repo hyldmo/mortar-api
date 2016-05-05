@@ -92,6 +92,10 @@ router.get('/search', function (req, resp, next) {
     });
 });
 
+router.post('/', function (req, resp, next) {
+    resp.json(req.body);
+});
+
 router.get('/', function (req, resp) {
     findDocuments(function (docs) {
         resp.json(docs);
