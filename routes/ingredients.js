@@ -40,7 +40,7 @@ function findQuery(query, callback) {
         for(var i = 0; i < array.length; i++) {
             term += array[i];
             if (i < array.length-1)
-                term += '.+';
+                term += '.*\s+.*';
         }
         var maxResults = query.limit ? parseInt(query.limit) : 10;
 
