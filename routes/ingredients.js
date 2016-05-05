@@ -58,17 +58,6 @@ function findQuery(query, callback) {
                     });
 
                 } else {
-                    //var newArray = [];
-                    //docs.forEach((ingredient, index) => {
-                    //    if (ingredient.substance.toLowerCase().startsWith(array[0].toLowerCase())) {
-                    //        newArray.push(docs.splice(index, 1));
-                    //    }
-                    //});
-                    //newArray.concat(docs);
-                    //docs.sort(function(a, b) {
-                    //    return a.substance.indexOf(term) - b.substance.indexOf(term)
-                    //});
-
                     callback({
                         "totalResults": count,
                         "results": docs
