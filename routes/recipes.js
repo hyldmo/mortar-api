@@ -92,8 +92,29 @@ router.get('/search', function (req, resp, next) {
     });
 });
 
+
+function findPuppies (callback) {
+    MongoClient.connect(url, function(err, db) {
+        console.log('Connected correctly to server');
+        // Get the documents collection
+        var collection = db.collection('puppyrecipes');
+        // Find some documents
+        collection.find({}).limit(10).toArray(function(err, docs) {
+            callback(docs);
+            db.close();
+        });
+    });
+}
+
+
 router.post('/', function (req, resp, next) {
     resp.json(req.body);
+});
+
+router.get('/puppies', function (req, resp) {
+    findPuppies(function (docs) {
+        resp.json(docs);
+    });
 });
 
 router.get('/', function (req, resp) {
@@ -101,6 +122,7 @@ router.get('/', function (req, resp) {
         resp.json(docs);
     });
 });
+
 router.get('/:id', function (req, resp, next) {
     findOne(req.params.id, function (docs) {
         if (docs !== undefined) {
