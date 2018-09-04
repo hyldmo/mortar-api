@@ -22,30 +22,54 @@ function findDocuments (callback) {
 
 function findQuery(query, callback) {
     MongoClient.connect(url, function (err, db) {
+        //TODO: Return correct status code
         if (err) {
-            callback({ "error": err });
-            db.close();
+            callback({
+                "error": err,
+                "code": 500
+            });
+            return;
         }
-
+        if (query.term.replace(/\s+/g, '').length < 2) {
+            callback({ "error": 'Query too short', code: 400 });
+            return;
+        }
+        //Split string ignoring duplicate and trailing whitespaces
+        var array = query.term.split(/\s+(?=\w)/g);
+        var term = '';
+        for(var i = 0; i < array.length; i++) {
+            term += array[i];
+            if (i < array.length-1)
+                term += '.*\s+.*';
+        }
         var maxResults = query.limit ? parseInt(query.limit) : 10;
 
         var collection = db.collection(collName);
 
-        var cur = collection.find({ "substance": { '$regex': query.term, "$options": '-i' } }).limit(maxResults);
+        var cur = collection.find({ "substance": { '$regex': term, "$options": '-i' } }).limit(maxResults);
 
         cur.count().then(function (count) {
 
             cur.toArray(function(err, docs) {
-                callback({
-                    "totalResults": count,
-                    "results": docs
-                });
+                if (err) {
+                    callback({
+                        "error": err,
+                        "code": 500
+                    });
 
+                } else {
+                    callback({
+                        "totalResults": count,
+                        "results": docs
+                    });
+                }
                 db.close();
             });
         });
     });
 }
+
+
 
 function findOne (id, callback) {
     MongoClient.connect(url, function(err, db) {
@@ -83,11 +107,11 @@ router.get('/*', function (req, resp, next) {
 
 router.get('/search', function (req, resp, next) {
     findQuery(req.query, function (data) {
-        if (data !== undefined) {
-            resp.json(data);
-        } else {
-            next();
+
+        if (data.error) {
+            resp.status(data.code);
         }
+        resp.json(data);
     });
 });
 
